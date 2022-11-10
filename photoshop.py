@@ -24,6 +24,15 @@ class MainWindow(QMainWindow):
         self.menu_file.addAction(blur)
         medianBlur = QAction("미디언 블러링", self, triggered=self.medianBlur_image)
         self.menu_file.addAction(medianBlur)
+        detailEnhance = QAction("디테일 필터", self, triggered=self.detailEnhance_image)
+        self.menu_file.addAction(detailEnhance)
+        bilateralFilter = QAction("바이레터널 필터", self, triggered=self.bilateralFilter_image)
+        self.menu_file.addAction(bilateralFilter)
+        cartoon = QAction("만화 필터", self, triggered=self.cartoon_image)
+        self.menu_file.addAction(cartoon)
+        bitwise = QAction("비트와이즈", self, triggered=self.bitwise_image)
+        self.menu_file.addAction(bitwise)
+
 
 
         # 메인화면 레이아웃
@@ -127,6 +136,47 @@ class MainWindow(QMainWindow):
         pixmap = QPixmap(image)
         self.label2.setPixmap(pixmap) 
 
+    def detailEnhance_image(self):
+        image = cv2.detailEnhance(self.image, sigma_s=10, sigma_r=0.4)
+        h, w, _ = image.shape
+        bytes_per_line = 3 * w
+        image = QImage(
+            image.data, w, h, bytes_per_line, QImage.Format_RGB888
+        ).rgbSwapped()
+        pixmap = QPixmap(image)
+        self.label2.setPixmap(pixmap)
+
+    def bilateralFilter_image(self):
+        image = cv2.bilateralFilter(self.image, 5, 75, 75)
+        h, w, _ = image.shape
+        bytes_per_line = 3 * w
+        image = QImage(
+            image.data, w, h, bytes_per_line, QImage.Format_RGB888
+        ).rgbSwapped()
+        pixmap = QPixmap(image)
+        self.label2.setPixmap(pixmap)
+
+    def cartoon_image(self):
+        image = cv2.stylization(self.image, sigma_s=150, sigma_r=0.2)
+        h, w, _ = image.shape
+        bytes_per_line = 3 * w
+        image = QImage(
+            image.data, w, h, bytes_per_line, QImage.Format_RGB888
+        ).rgbSwapped()
+        pixmap = QPixmap(image)
+        self.label2.setPixmap(pixmap)
+       
+
+    def bitwise_image(self):
+        image = cv2.bitwise_not(self.image, 1)
+        h, w, _ = image.shape
+        bytes_per_line = 3 * w
+        image = QImage(
+            image.data, w, h, bytes_per_line, QImage.Format_RGB888
+        ).rgbSwapped()
+        pixmap = QPixmap(image)
+        self.label2.setPixmap(pixmap)
+
 
     def clear_label(self):
         self.label2.clear()
@@ -140,5 +190,4 @@ if __name__ == "__main__":
     window = MainWindow()
     window.show()
     sys.exit(app.exec())
-
 
